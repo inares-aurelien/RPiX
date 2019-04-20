@@ -1,0 +1,36 @@
+sudo: required
+
+services:
+  - docker
+
+addons:
+  apt:
+    packages:
+      - docker-ce
+
+env:
+  global:
+    - COMMIT=${TRAVIS_COMMIT::8}
+
+before_install:
+  # - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  # - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  # - sudo apt-get update
+  # - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+  - docker -v
+  - docker pull arm32v7/alpine:edge
+  - docker run --rm --privileged multiarch/qemu-user-static:register
+  - docker ps -a
+
+script:
+  - DOCKER_BUILDKIT=1 docker build --progress=plain -t rpix .
+
+
+after_success:
+  # - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+  # - export REPO=
+  # - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
+  # - docker build -f Dockerfile -t $REPO:$COMMIT .
+  # - docker tag $REPO:$COMMIT $REPO:$TAG
+  # - docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
+  # - docker push $REPO
