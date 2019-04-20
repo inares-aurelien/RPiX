@@ -34,13 +34,7 @@ script:
     # pwd && ls -alh &&
     # popd > /dev/null &&
     # pwd && ls -alh
-  - buildctl build --frontend dockerfile.v0 \
-        --frontend-opt platform=linux/armhf \
-        --frontend-opt filename=./Dockerfile \
-        --exporter image \
-        --exporter-opt push=false \
-        --local dockerfile=. \
-        --local context=.
+  - buildctl build --frontend dockerfile.v0 --frontend-opt platform=linux/armhf --frontend-opt filename=./Dockerfile --exporter image --exporter-opt push=false --local dockerfile=. --local context=.
   # - DOCKER_BUILDKIT=1 docker build --progress=plain -t rpix .
   # - docker build -t rpix .
 
