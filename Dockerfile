@@ -5,6 +5,8 @@
 
 FROM arm32v7/alpine:edge
 
+COPY tmp/qemu-arm-static /usr/bin/qemu-arm-static
+
 ENV XORGVER=1.20.4
 ENV XORGNAME=xorg-server-$XORGVER
 
@@ -27,14 +29,14 @@ RUN \
 WORKDIR /home/
 
 RUN \
-     wget https://www.x.org/releases/individual/xserver/${XORGNAME}.tar.gz \
- &&  tar -xzf ${XORGNAME}.tar.gz \
+     wget -qO- https://www.x.org/releases/individual/xserver/${XORGNAME}.tar.gz | tar xz \
+ &&  cd xorg-server-* \
  &&  export CFLAGS="-mcpu=cortex-a53 -mfloat-abi=hard -mfpu=neon-fp-armv8 -mneon-for-64bits -Ofast -D_GNU_SOURCE" \
- &&  [ "$CLIBC" == musl ] && export CFLAGS="$CFLAGS -D__gid_t=gid_t -D__uid_t=uid_t" \
+ &&  export CFLAGS="$CFLAGS -D__gid_t=gid_t -D__uid_t=uid_t" \
  &&  ./configure --prefix=/usr --sysconfdir=/etc/X11 --localstatedir=/var --with-xkb-path=/usr/share/X11/xkb --with-xkb-output=/var/lib/xkb --without-systemd-daemon --enable-composite --enable-config-udev --enable-dri --enable-dri2 --enable-glamor --enable-kdrive --enable-xace --enable-xcsecurity --enable-xephyr --enable-xnest --enable-xorg --enable-xres --enable-xv --enable-xwayland --disable-config-hal --disable-dmx --disable-systemd-logind --enable-install-setuid --with-os-vendor="${DISTRO_NAME:-Alpine Linux}" \
  &&  make -j 2 install \
  &&  cd .. \
- &&  rm -rf ${XORGNAME}/
+ &&  rm -rf xorg-server-*
 
 #patch hw/xfree86/common/compiler.h  < 'musl-arm-inb-outb.patch'
 #wget https://github.com/kraj/poky/raw/master/meta/recipes-graphics/xorg-xserver/xserver-xorg/musl-arm-inb-outb.patch
