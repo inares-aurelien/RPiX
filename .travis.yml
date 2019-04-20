@@ -16,21 +16,33 @@ before_script:
   - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
   - docker -v
   - docker pull arm32v7/alpine:edge
-  - docker run --rm --privileged multiarch/qemu-user-static:register --reset
+  # - docker run --rm --privileged multiarch/qemu-user-static:register --reset
   # - docker ps -a
+  - sudo docker run --privileged linuxkit/binfmt:v0.6
+  - sudo docker run -d --privileged -p 1234:1234 --name buildkit moby/buildkit:latest --addr tcp://0.0.0.0:1234 --oci-worker-platform linux/amd64 --oci-worker-platform linux/armhf
+  - sudo docker cp buildkit:/usr/bin/buildctl /usr/bin/
+  - export BUILDKIT_HOST=tcp://0.0.0.0:1234
+
 
 script:
 # get qemu-arm-static binary
-  - >
-    mkdir tmp &&
-    pushd tmp > /dev/null &&
-    curl -L -o qemu-arm-static.tar.gz https://github.com/multiarch/qemu-user-static/releases/download/v${QEMUVER}/qemu-arm-static.tar.gz &&
-    tar xzf qemu-arm-static.tar.gz &&
-    pwd && ls -alh &&
-    popd > /dev/null &&
-    pwd && ls -alh
+  # - >
+    # mkdir tmp &&
+    # pushd tmp > /dev/null &&
+    # curl -L -o qemu-arm-static.tar.gz https://github.com/multiarch/qemu-user-static/releases/download/v${QEMUVER}/qemu-arm-static.tar.gz &&
+    # tar xzf qemu-arm-static.tar.gz &&
+    # pwd && ls -alh &&
+    # popd > /dev/null &&
+    # pwd && ls -alh
+  - buildctl build --frontend dockerfile.v0 \
+        --frontend-opt platform=linux/armhf \
+        --frontend-opt filename=./Dockerfile \
+        --exporter image \
+        --exporter-opt push=false \
+        --local dockerfile=. \
+        --local context=.
   # - DOCKER_BUILDKIT=1 docker build --progress=plain -t rpix .
-  - docker build -t rpix .
+  # - docker build -t rpix .
 
 
 after_success:

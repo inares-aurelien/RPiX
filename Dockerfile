@@ -3,7 +3,7 @@
 # DOCKER_BUILDKIT=1 docker build --progress=plain -t rpix .
 # docker run --privileged --rm -it -p 1234:1234/udp --device=/dev/dri/card0:/dev/dri/card0 --device=/dev/input/event0:/dev/input/event0 -v /var/run/dbus:/run/dbus --shm-size=350MB --tmpfs /run --tmpfs /var/log --tmpfs /tmp --log-driver=none --entrypoint /bin/bash rpix
 
-FROM alpine:edge
+FROM arm32v7/alpine:edge
 
 # COPY tmp/qemu-arm-static /bin/qemu-arm-static
 
