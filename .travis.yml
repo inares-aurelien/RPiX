@@ -29,7 +29,7 @@ script:
     pwd && ls -alh &&
     popd > /dev/null &&
     pwd && ls -alh
-  - DOCKER_BUILDKIT=1 docker build --progress=plain -t rpix .
+  # - DOCKER_BUILDKIT=1 docker build --progress=plain -t rpix .
   - docker build -t rpix .
 
 
