@@ -17,7 +17,7 @@ before_script:
   - docker -v
   - docker pull arm32v7/alpine:edge
   - docker run --rm --privileged multiarch/qemu-user-static:register --reset
-  # - docker ps -a
+  # - docker ps -a 
 
 script:
 # get qemu-arm-static binary
