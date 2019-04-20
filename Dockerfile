@@ -3,7 +3,7 @@
 # DOCKER_BUILDKIT=1 docker build --progress=plain -t rpix .
 # docker run --privileged --rm -it -p 1234:1234/udp --device=/dev/dri/card0:/dev/dri/card0 --device=/dev/input/event0:/dev/input/event0 -v /var/run/dbus:/run/dbus --shm-size=350MB --tmpfs /run --tmpfs /var/log --tmpfs /tmp --log-driver=none --entrypoint /bin/bash rpix
 
-FROM alpine:edge
+FROM arm32v7/alpine:edge
 
 RUN apk update && apk --no-cache upgrade
 
@@ -24,9 +24,9 @@ RUN \
 WORKDIR /home/
 
 RUN \
-     XORGVER=1.20.4
-     XORGNAME=xorg-server-${XORGVER}
-     wget https://www.x.org/releases/individual/xserver/${XORGNAME}.tar.gz \
+     XORGVER=1.20.4 \
+ &&  XORGNAME=xorg-server-${XORGVER} \
+ &&  wget https://www.x.org/releases/individual/xserver/${XORGNAME}.tar.gz \
  &&  tar -xjf ${XORGNAME}.tar.gz \
  &&  export CFLAGS="-mcpu=cortex-a53 -mfloat-abi=hard -mfpu=neon-fp-armv8 -mneon-for-64bits -Ofast -D_GNU_SOURCE" \
  &&  [ "$CLIBC" == musl ] && export CFLAGS="$CFLAGS -D__gid_t=gid_t -D__uid_t=uid_t" \
