@@ -26,7 +26,9 @@ script:
     pushd tmp &&
     curl -L -o qemu-arm-static.tar.gz https://github.com/multiarch/qemu-user-static/releases/download/v${QEMUVER}/qemu-arm-static.tar.gz &&
     tar xzf qemu-arm-static.tar.gz &&
-    popd
+    ls -alh &&
+    popd &&
+    ls -alh
   - DOCKER_BUILDKIT=1 docker build --progress=plain -t rpix .
 
 
