@@ -5,7 +5,7 @@
 
 FROM arm32v7/alpine:edge
 
-COPY tmp/qemu-arm-static /bin/qemu-arm-static
+# COPY tmp/qemu-arm-static /bin/qemu-arm-static
 
 ENV XORGVER=1.20.4
 ENV XORGNAME=xorg-server-$XORGVER
