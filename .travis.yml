@@ -16,10 +16,10 @@ before_install:
   - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
   - docker -v
   - docker pull arm32v7/alpine:edge
-  - docker run --rm --privileged multiarch/qemu-user-static:register
-  - docker ps -a
+  # - docker ps -a
 
 script:
+  - docker run --rm --privileged multiarch/qemu-user-static:register --reset
   - DOCKER_BUILDKIT=1 docker build --progress=plain -t rpix .
 
 

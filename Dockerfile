@@ -5,6 +5,9 @@
 
 FROM arm32v7/alpine:edge
 
+ENV XORGVER=1.20.4
+ENV XORGNAME=xorg-server-$XORGVER
+
 RUN apk update && apk --no-cache upgrade
 
 RUN \
@@ -24,10 +27,8 @@ RUN \
 WORKDIR /home/
 
 RUN \
-     XORGVER=1.20.4 \
- &&  XORGNAME=xorg-server-${XORGVER} \
- &&  wget https://www.x.org/releases/individual/xserver/${XORGNAME}.tar.gz \
- &&  tar -xjf ${XORGNAME}.tar.gz \
+     wget https://www.x.org/releases/individual/xserver/${XORGNAME}.tar.gz \
+ &&  tar -xzf ${XORGNAME}.tar.gz \
  &&  export CFLAGS="-mcpu=cortex-a53 -mfloat-abi=hard -mfpu=neon-fp-armv8 -mneon-for-64bits -Ofast -D_GNU_SOURCE" \
  &&  [ "$CLIBC" == musl ] && export CFLAGS="$CFLAGS -D__gid_t=gid_t -D__uid_t=uid_t" \
  &&  ./configure --prefix=/usr --sysconfdir=/etc/X11 --localstatedir=/var --with-xkb-path=/usr/share/X11/xkb --with-xkb-output=/var/lib/xkb --without-systemd-daemon --enable-composite --enable-config-udev --enable-dri --enable-dri2 --enable-glamor --enable-kdrive --enable-xace --enable-xcsecurity --enable-xephyr --enable-xnest --enable-xorg --enable-xres --enable-xv --enable-xwayland --disable-config-hal --disable-dmx --disable-systemd-logind --enable-install-setuid --with-os-vendor="${DISTRO_NAME:-Alpine Linux}" \
