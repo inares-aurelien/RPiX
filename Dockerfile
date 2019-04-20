@@ -10,7 +10,8 @@ FROM arm32v7/alpine:edge
 ENV XORGVER=1.20.4
 ENV XORGNAME=xorg-server-$XORGVER
 
-RUN apk update && apk --no-cache upgrade
+RUN apk update
+RUN apk --no-cache upgrade
 
 RUN \
       apk --no-cache add bash sudo git wget nano \
