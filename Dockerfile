@@ -31,8 +31,7 @@ WORKDIR /home/
 RUN \
      wget -qO- https://www.x.org/releases/individual/xserver/${XORGNAME}.tar.gz | tar xz \
  &&  cd xorg-server-* \
- &&  export CFLAGS="-mcpu=cortex-a53 -mfloat-abi=hard -mfpu=neon-fp-armv8 -mneon-for-64bits -Ofast -D_GNU_SOURCE" \
- &&  export CFLAGS="$CFLAGS -D__gid_t=gid_t -D__uid_t=uid_t" \
+ &&  export CFLAGS="-mcpu=cortex-a53 -mfloat-abi=hard -mfpu=neon-fp-armv8 -mneon-for-64bits -Ofast -D_GNU_SOURCE -D__KERNEL_STRICT_NAMES" \
  &&  ./configure --prefix=/usr --sysconfdir=/etc/X11 --localstatedir=/var --with-xkb-path=/usr/share/X11/xkb --with-xkb-output=/var/lib/xkb --without-systemd-daemon --enable-composite --enable-config-udev --enable-dri --enable-dri2 --enable-glamor --enable-kdrive --enable-xace --enable-xcsecurity --enable-xephyr --enable-xnest --enable-xorg --enable-xres --enable-xv --enable-xwayland --disable-config-hal --disable-dmx --disable-systemd-logind --enable-install-setuid --with-os-vendor="${DISTRO_NAME:-Alpine Linux}" \
  &&  make -j 2 install \
  &&  cd .. \
@@ -47,6 +46,8 @@ RUN \
      echo -e "\n\n\n***** Build & Install fbturbo *****\n" \
  &&  git clone https://github.com/ssvb/xf86-video-fbturbo.git --depth=1 \
  &&  cd xf86-video-fbturbo/ \
+ &&  export CFLAGS="-mcpu=cortex-a53 -mfloat-abi=hard -mfpu=neon-fp-armv8 -Ofast" \
+ &&  export CXXFLAGS="-mcpu=cortex-a53 -mfloat-abi=hard -mfpu=neon-fp-armv8 -Ofast" \
  &&  autoreconf -vi \
  &&  ./configure --prefix=/usr \
  &&  time make -j $(nproc --all) install \
