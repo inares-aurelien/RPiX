@@ -35,8 +35,8 @@ RUN \
  &&  wget https://github.com/kraj/poky/raw/master/meta/recipes-graphics/xorg-xserver/xserver-xorg/musl-arm-inb-outb.patch \
  &&  patch hw/xfree86/common/compiler.h  < 'musl-arm-inb-outb.patch' \
  &&  export CFLAGS="-mcpu=cortex-a53 -mfloat-abi=hard -mfpu=neon-fp-armv8 -mneon-for-64bits -Ofast -D_GNU_SOURCE -D__KERNEL_STRICT_NAMES" \
- &&  ./configure --prefix=/usr --sysconfdir=/etc/X11 --localstatedir=/var --with-xkb-path=/usr/share/X11/xkb --with-xkb-output=/var/lib/xkb --without-systemd-daemon --enable-composite --enable-config-udev --enable-dri --enable-dri2 --enable-glamor --enable-kdrive --enable-xace --enable-xcsecurity --enable-xephyr --enable-xnest --enable-xorg --enable-xres --enable-xv --enable-xwayland --disable-config-hal --disable-dmx --disable-systemd-logind --enable-install-setuid --with-os-vendor="${DISTRO_NAME:-Alpine Linux}" \
- &&  make -j 2 install \
+ &&  ./configure --prefix=/usr --sysconfdir=/etc/X11 --localstatedir=/var --with-xkb-path=/usr/share/X11/xkb --with-xkb-output=/var/lib/xkb --without-systemd-daemon --enable-composite --enable-config-udev --enable-dri --enable-dri2 --enable-glamor --enable-kdrive --enable-xvfb --enable-xorg --enable-xres --disable-xv --enable-xwayland --disable-config-hal --disable-dmx --disable-systemd-logind --enable-install-setuid --with-os-vendor="${DISTRO_NAME:-Alpine Linux}" \
+ &&  make -j $(nproc --all) install \
  &&  cd .. \
  &&  rm -rf xorg-server-*
 
@@ -72,7 +72,7 @@ RUN \
  &&  git clone git://anongit.freedesktop.org/mesa/drm --depth=1 \
  &&  cd drm \
  &&  ./autogen.sh --prefix=/usr --libdir=/usr/lib/arm-linux-gnueabihf/ --disable-vmwgfx --disable-nouveau --disable-libkms --disable-intel --disable-radeon --disable-amdgpu --disable-freedreno --enable-udev \
- &&  make install \
+ &&  make -j $(nproc --all) install \
  &&  cd .. \
  &&  rm -rf drm \
 
