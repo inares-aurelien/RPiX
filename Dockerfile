@@ -32,14 +32,14 @@ WORKDIR /home/
 RUN \
      wget -qO- https://www.x.org/releases/individual/xserver/${XORGNAME}.tar.gz | tar xz \
  &&  cd xorg-server-* \
+ &&  wget https://github.com/kraj/poky/raw/master/meta/recipes-graphics/xorg-xserver/xserver-xorg/musl-arm-inb-outb.patch \
+ &&  patch hw/xfree86/common/compiler.h  < 'musl-arm-inb-outb.patch' \
  &&  export CFLAGS="-mcpu=cortex-a53 -mfloat-abi=hard -mfpu=neon-fp-armv8 -mneon-for-64bits -Ofast -D_GNU_SOURCE -D__KERNEL_STRICT_NAMES" \
  &&  ./configure --prefix=/usr --sysconfdir=/etc/X11 --localstatedir=/var --with-xkb-path=/usr/share/X11/xkb --with-xkb-output=/var/lib/xkb --without-systemd-daemon --enable-composite --enable-config-udev --enable-dri --enable-dri2 --enable-glamor --enable-kdrive --enable-xace --enable-xcsecurity --enable-xephyr --enable-xnest --enable-xorg --enable-xres --enable-xv --enable-xwayland --disable-config-hal --disable-dmx --disable-systemd-logind --enable-install-setuid --with-os-vendor="${DISTRO_NAME:-Alpine Linux}" \
  &&  make -j 2 install \
  &&  cd .. \
  &&  rm -rf xorg-server-*
 
-#patch hw/xfree86/common/compiler.h  < 'musl-arm-inb-outb.patch'
-#wget https://github.com/kraj/poky/raw/master/meta/recipes-graphics/xorg-xserver/xserver-xorg/musl-arm-inb-outb.patch
 #export CFLAGS="-mcpu=cortex-a53 -mfloat-abi=hard -mfpu=neon-fp-armv8 -mneon-for-64bits -Ofast -D__KERNEL_STRICT_NAMES"
 
 
