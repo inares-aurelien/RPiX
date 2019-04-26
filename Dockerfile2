@@ -1,0 +1,58 @@
+FROM rpix
+
+ARG LIBEVDEVVER=1.6.0
+ARG EVDEVVER=2.10.6
+ARG MESADEMOVER=8.4.0
+
+ARG CFLAGS="-mcpu=cortex-a53 -mfloat-abi=hard -mfpu=neon-fp-armv8 -mneon-for-64bits -Ofast"
+ARG CXXFLAGS="-mcpu=cortex-a53 -mfloat-abi=hard -mfpu=neon-fp-armv8 -mneon-for-64bits -Ofast"
+ARG CPPFLAGS="-mcpu=cortex-a53 -mfloat-abi=hard -mfpu=neon-fp-armv8 -mneon-for-64bits -Ofast"
+ARG XORG_CONFIG="-q --prefix=/usr --libdir=/usr/lib/ --sysconfdir=/etc --localstatedir=/var --datadir=/usr/lib"
+
+
+
+RUN \
+     echo -e "\n\n\n***** Build & Install libevdev *****\n" \
+ # &&  apk --no-cache add inputproto \
+ &&  wget -qO- https://freedesktop.org/software/libevdev/libevdev-${LIBEVDEVVER}.tar.xz | tar xJ \
+ &&  cd libevdev-* \
+ &&  ./configure $XORG_CONFIG \
+ &&  time make V=0 -s -j $(nproc --all) install \
+ &&  cd .. \
+ &&  rm -rf xf86-input-evdev*
+
+
+RUN \
+     echo -e "\n\n\n***** Build & Install evdev *****\n" \
+ &&  apk --no-cache add mtdev-dev \
+ &&  wget -qO- https://www.x.org/archive//individual/driver/xf86-input-evdev-${EVDEVVER}.tar.bz2 | tar xj \
+ &&  cd xf86-input-evdev* \
+ &&  ./configure $XORG_CONFIG \
+ &&  time make V=0 -s -j $(nproc --all) install \
+ &&  cd .. \
+ &&  rm -rf xf86-input-evdev*
+
+
+# glew-dev
+RUN \
+     echo -e "\n\n\n***** Build & Install Mesa demos *****\n" \
+ &&  apk --no-cache add glew-dev freeglut-dev findutils \
+ &&  wget -qO- ftp://ftp.freedesktop.org/pub/mesa/demos/mesa-demos-${MESADEMOVER}.tar.bz2 | tar xj \
+ &&  cd mesa-demos-* \
+ &&  autoreconf -vif \
+ &&  ./configure --prefix=/usr \
+ &&  time make V=0 -s -j $(nproc --all) install \
+ &&  cd .. \
+ &&  rm -rf xf86-video-fbdev*
+
+
+
+
+
+
+
+
+
+
+
+

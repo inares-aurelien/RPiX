@@ -1,0 +1,18 @@
+--- /usr/include/sys/types.h
++++ /usr/include/sys/types.h
+@@ -84,3 +84,15 @@
+ }
+ #endif
+ #endif
++
++
++#ifndef __uid_t_defined
++typedef uid_t __uid_t;
++# define __uid_t_defined
++#endif
++
++#ifndef __gid_t_defined
++typedef gid_t __gid_t;
++# define __gid_t_defined
++#endif
++
